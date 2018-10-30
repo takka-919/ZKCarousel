@@ -10,7 +10,7 @@ import UIKit
 import SafariServices
 
 final public class ZKCarousel: UIView, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource {
-
+    public var urlArray : [URL] = []
 
     public var slides : [ZKCarouselSlide] = [] {
         didSet {
@@ -89,7 +89,7 @@ final public class ZKCarousel: UIView, UICollectionViewDelegateFlowLayout, UICol
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "slideCell", for: IndexPath(item: index, section: 0)) as! carouselCollectionViewCell
 
         if #available(iOS 9.0, *) {
-            let safariViewController = SFSafariViewController(url: cell.getURL())
+            let safariViewController = SFSafariViewController(url: urlArray[index])
             if let topController = UIApplication.topViewController() {
                 topController.present(safariViewController, animated: true, completion: nil)
             }
@@ -145,7 +145,7 @@ final public class ZKCarousel: UIView, UICollectionViewDelegateFlowLayout, UICol
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "slideCell", for: indexPath) as! carouselCollectionViewCell
 
         if #available(iOS 9.0, *) {
-            let safariViewController = SFSafariViewController(url: cell.getURL())
+            let safariViewController = SFSafariViewController(url:urlArray[indexPath.item])
             if let topController = UIApplication.topViewController() {
                 topController.present(safariViewController, animated: true, completion: nil)
             }
@@ -222,12 +222,6 @@ fileprivate class carouselCollectionViewCell: UICollectionViewCell {
         return label
     }()
 
-    private var pageUrl : URL?
-
-    func getURL() -> URL {
-        return pageUrl!
-    }
-
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
@@ -275,9 +269,6 @@ fileprivate class carouselCollectionViewCell: UICollectionViewCell {
             self.descriptionLabel.text = description
         }
 
-        if let url = slide.slideURL {
-            self.pageUrl = url
-        }
 
         return
     }
@@ -289,13 +280,11 @@ final public class ZKCarouselSlide : NSObject {
     public var slideImage : UIImage?
     public var slideTitle : String?
     public var slideDescription: String?
-    public var slideURL: URL?
 
-    public init(image: UIImage, title: String, description: String, URL: URL) {
+    public init(image: UIImage, title: String, description: String) {
         slideImage = image
         slideTitle = title
         slideDescription = description
-        slideURL = URL
     }
 
     override init() {
