@@ -88,15 +88,13 @@ final public class ZKCarousel: UIView, UICollectionViewDelegateFlowLayout, UICol
         let index = visibleIndexPath.item
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "slideCell", for: IndexPath(item: index, section: 0)) as! carouselCollectionViewCell
 
-        if cell.pageUrl != nil  {
-            if #available(iOS 9.0, *) {
-                let safariViewController = SFSafariViewController(url: cell.pageUrl!)
-                if let topController = UIApplication.topViewController() {
-                    topController.present(safariViewController, animated: true, completion: nil)
-                }
-            } else {
-                // Fallback on earlier versions
+        if #available(iOS 9.0, *) {
+            let safariViewController = SFSafariViewController(url: cell.getURL())
+            if let topController = UIApplication.topViewController() {
+                topController.present(safariViewController, animated: true, completion: nil)
             }
+        } else {
+            // Fallback on earlier versions
         }
     }
 
@@ -146,15 +144,13 @@ final public class ZKCarousel: UIView, UICollectionViewDelegateFlowLayout, UICol
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "slideCell", for: indexPath) as! carouselCollectionViewCell
 
-        if cell.pageUrl != nil  {
-            if #available(iOS 9.0, *) {
-                let safariViewController = SFSafariViewController(url: cell.pageUrl!)
-                if let topController = UIApplication.topViewController() {
-                    topController.present(safariViewController, animated: true, completion: nil)
-                }
-            } else {
-                // Fallback on earlier versions
+        if #available(iOS 9.0, *) {
+            let safariViewController = SFSafariViewController(url: cell.getURL())
+            if let topController = UIApplication.topViewController() {
+                topController.present(safariViewController, animated: true, completion: nil)
             }
+        } else {
+            // Fallback on earlier versions
         }
     }
 
@@ -226,7 +222,11 @@ fileprivate class carouselCollectionViewCell: UICollectionViewCell {
         return label
     }()
 
-    var pageUrl : URL?
+    private var pageUrl : URL?
+
+    func getURL() -> URL {
+        return pageUrl!
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -236,6 +236,7 @@ fileprivate class carouselCollectionViewCell: UICollectionViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
 
     private func setup() {
         self.backgroundColor = .clear
