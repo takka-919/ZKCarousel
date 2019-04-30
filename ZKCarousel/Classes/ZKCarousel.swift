@@ -11,6 +11,7 @@ import SafariServices
 
 final public class ZKCarousel: UIView, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource {
     public var urlArray : [URL] = []
+    public var shareRecordClosure = {() -> Void in}
 
     public var slides : [ZKCarouselSlide] = [] {
         didSet {
@@ -89,10 +90,16 @@ final public class ZKCarousel: UIView, UICollectionViewDelegateFlowLayout, UICol
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "slideCell", for: IndexPath(item: index, section: 0)) as! carouselCollectionViewCell
 
         if #available(iOS 9.0, *) {
-            let safariViewController = SFSafariViewController(url: urlArray[index])
-            if let topController = UIApplication.topViewController() {
-                topController.present(safariViewController, animated: true, completion: nil)
+            let urlString = urlArray[index].absoluteString
+            if urlString == "shareRecord" {
+               shareRecordClosure()
+            } else {
+                let safariViewController = SFSafariViewController(url: urlArray[index])
+                if let topController = UIApplication.topViewController() {
+                    topController.present(safariViewController, animated: true, completion: nil)
+                }
             }
+
         } else {
             // Fallback on earlier versions
         }
